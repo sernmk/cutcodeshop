@@ -84,7 +84,7 @@ class AuthController extends Controller
 
         return $status === Password::RESET_LINK_SENT
             ? back()->with(['message' => __($status)])
-            : back()->withErrors(['email' => __($status)]);
+            : back()->withErrors(['email' => __($status)]);//TODO сделать, чтобы не 'светить' наличие или отсутствие email в БД
     }
 
     public function reset(string $token): Factory|View|Application
@@ -133,11 +133,11 @@ class AuthController extends Controller
         // TODO move to custom table
 
         // TODO если есть пользователь, то Duplicate entry
-        // TODO нужно сделать проверку name, так как на гитхабе не всегда он есть, либо сделать nullable поле name
+
         $user = User::query()->updateOrCreate([
             'github_id' => $githubUser->id,
         ], [
-            'name' => $githubUser->name,
+            'name' => $githubUser->name ?? $githubUser->getId(),
             'email' => $githubUser->email,
             'password' => bcrypt(str()->random(20))
         ]);
