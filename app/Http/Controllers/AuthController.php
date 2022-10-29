@@ -18,7 +18,7 @@ use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
-    public function index(): Factory|View|Application
+    public function index(): Factory|View|Application|RedirectResponse
     {
         return view('auth.index');
     }
@@ -35,8 +35,6 @@ class AuthController extends Controller
 
     public function signIn(SignInFormRequest $request): RedirectResponse
     {
-        //TODO Rate limit
-
         if (!auth()->attempt($request->validated())) {
             return back()->withErrors([
                 'email' => 'Предоставленные данные у нас не найдены.',
@@ -80,11 +78,14 @@ class AuthController extends Controller
             $request->only('email')
         );
 
-        //TODO реализовать flash уведомления
+        if ($status === Password::RESET_LINK_SENT) {
+            flash()->info(__($status));
 
-        return $status === Password::RESET_LINK_SENT
-            ? back()->with(['message' => __($status)])
-            : back()->withErrors(['email' => __($status)]);//TODO сделать, чтобы не 'светить' наличие или отсутствие email в БД
+            return back();
+        }
+
+        //TODO сделать, чтобы не 'светить' наличие или отсутствие email в БД при введении неверного email
+        return back()->withErrors(['email' => __($status)]);
     }
 
     public function reset(string $token): Factory|View|Application
@@ -107,9 +108,14 @@ class AuthController extends Controller
             }
         );
 
-        return $status === Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('message', __($status))
-            : back()->withErrors(['email' => [__($status)]]);
+        if ($status === Password::PASSWORD_RESET) {
+            flash()->info(__($status));
+
+            return redirect()->route('login');
+        }
+
+        //TODO сделать, чтобы не 'светить' наличие или отсутствие email в БД при введении неверного email
+        return back()->withErrors(['email' => __($status)]);
     }
 
     public function github(): \Symfony\Component\HttpFoundation\RedirectResponse|RedirectResponse
@@ -130,9 +136,11 @@ class AuthController extends Controller
             ]);
         }
 
-        // TODO move to custom table
+        //TODO move to custom table
+        // table: socials_auth, туда вынести провайдеры (github, vk, ok и т.д.)
+        // привязка к user_id с ключами
 
-        // TODO если есть пользователь, то Duplicate entry
+        //TODO если есть созданный не через гитхаб пользователь, то Duplicate entry
 
         $user = User::query()->updateOrCreate([
             'github_id' => $githubUser->id,
