@@ -79,7 +79,7 @@ class AuthController extends Controller
         );
 
         if ($status === Password::RESET_LINK_SENT) {
-            flash()->info(__($status));
+            flash()->info(__($status));// TODO не появляется flash
 
             return back();
         }
