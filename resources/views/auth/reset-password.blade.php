@@ -6,7 +6,7 @@
 
     <x-forms.auth-forms
         title="Сохранение нового пароля"
-        action="{{ route('password.update') }}"
+        action="{{ route('password-reset.handle') }}"
         method="POST"
     >
 

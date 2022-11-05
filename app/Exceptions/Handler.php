@@ -48,5 +48,10 @@ class Handler extends ExceptionHandler
                 app('sentry')->captureException($e);
             }
         });
+
+        $this->renderable(function (\DomainException $exception) {
+            flash()->alert($exception->getMessage());
+            return back();
+        });
     }
 }
