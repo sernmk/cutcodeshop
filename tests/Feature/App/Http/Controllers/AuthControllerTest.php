@@ -78,6 +78,49 @@ class AuthControllerTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
+    /**
+     * @test
+     * @return void
+     */
+    public function it_sign_in_fail_email(): void
+    {
+        $password = '123456789';
+        $user = UserFactory::new()->create([
+            'email' => 'sxdev@yandex.ru',
+            'password' => bcrypt($password)
+        ]);
+        $request = SignInFormRequest::factory()->create([
+            'email' => 'sxdevvvv@yandex.ru',
+            'password' => $password
+        ]);
+
+        $response = $this->post(action([SignInController::class, 'handle']), $request);
+
+        $response->assertInvalid();
+
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_sign_in_fail_password(): void
+    {
+        $password = '123456789';
+        $user = UserFactory::new()->create([
+            'email' => 'sxdev@yandex.ru',
+            'password' => bcrypt($password)
+        ]);
+        $request = SignInFormRequest::factory()->create([
+            'email' => $user->email,
+            'password' => '111111111'
+        ]);
+
+        $response = $this->post(action([SignInController::class, 'handle']), $request);
+
+        $response->assertInvalid();
+    }
+
     /** @test */
     public function it_sign_up_success(): void
     {
