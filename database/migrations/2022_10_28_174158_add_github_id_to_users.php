@@ -17,7 +17,7 @@ return new class extends Migration
     {
         if(!app()->isProduction()) {
             Schema::table('users', function (Blueprint $table) {
-                //
+                // TODO доделать откат миграции
             });
         }
     }

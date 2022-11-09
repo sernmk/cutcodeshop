@@ -23,7 +23,7 @@ final class AuthRegistrar implements RouteRegistrar
 
                 // TODO запретить GET /logout (выскакивает ошибка)
                 Route::delete('/logout', 'logOut')
-                    ->name('logOut');
+                    ->name('logout');
             });
 
             Route::controller(\App\Http\Controllers\Auth\SignUpController::class)->group(function () {
