@@ -24,6 +24,8 @@ class ThumbnailController extends Controller
             $storage->makeDirectory($newDirPath);
         }
 
+        // TODO добавить удаление файлов (чистка старых)
+
         if (!$storage->exists($resultPath)) {
             $image = Image::make($storage->path($realPath));
 
