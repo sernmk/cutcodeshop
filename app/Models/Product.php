@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use App\Traits\Models\HasSlug;
-use App\Traits\Models\HasThumbnail;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Support\Traits\Models\HasSlug;
+use Support\Traits\Models\HasThumbnail;
 
 class Product extends Model
 {
